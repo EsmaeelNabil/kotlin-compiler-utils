@@ -1,0 +1,4 @@
+org.company.app.test.example-androidTest-0 /Users/esmaeelmoustafa/Dev/work-related/craftspeopleApp/compose-compiler-utils/example/build/generated/res/resValues/androidTest/debug
+org.company.app.test.example-mergeDebugAndroidTestResources-1 /Users/esmaeelmoustafa/Dev/work-related/craftspeopleApp/compose-compiler-utils/example/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+org.company.app.test.example-mergeDebugAndroidTestResources-2 /Users/esmaeelmoustafa/Dev/work-related/craftspeopleApp/compose-compiler-utils/example/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+org.company.app.test.example-debugAndroidTest-3 /Users/esmaeelmoustafa/Dev/work-related/craftspeopleApp/compose-compiler-utils/example/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources
