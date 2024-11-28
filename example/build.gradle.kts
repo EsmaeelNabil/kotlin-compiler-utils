@@ -12,7 +12,7 @@ plugins {
 compilugin {
     enabled.set(true)
     logging.set(true)
-    composeModifierWrapperEnabled.set(false)
+    composeModifierWrapperEnabled.set(true)
     composeModifierWrapperPath.set("dev.supersam.android.app.ModifierBuilder.buildModifier")
     functionsVisitorEnabled.set(true)
     functionsVisitorAnnotation.set("TrackIt")
