@@ -1,5 +1,6 @@
 import com.vanniktech.maven.publish.GradlePlugin
 import com.vanniktech.maven.publish.JavadocJar
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -42,9 +43,10 @@ gradlePlugin {
 
 
 mavenPublishing {
-    configure(GradlePlugin(sourcesJar = true, javadocJar = JavadocJar.Javadoc()))
-    publishToMavenCentral(automaticRelease = true)
+    configure(GradlePlugin(javadocJar = JavadocJar.Javadoc(), sourcesJar = true))
+    publishToMavenCentral(host = SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
 }
+
 
 // configuration required to produce unique META-INF/*.kotlin_module file names
 tasks.withType<KotlinCompile>().configureEach {

@@ -5,7 +5,6 @@ package dev.supersam.plugin
 import com.google.auto.service.AutoService
 import dev.supersam.util.DebugLogger
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
@@ -19,28 +18,31 @@ public class CompiluginComponentRegistrar : CompilerPluginRegistrar() {
         get() = true
 
     override fun ExtensionStorage.registerExtensions(configuration: CompilerConfiguration) {
-        if (configuration[KEY_ENABLED] == false) {
+        if (configuration[key_enabled_compiler_key] == false) {
             return
         }
 
         val messageCollector =
             configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
-
         // logging
-        val loggingEnabled = configuration[KEY_LOGGING_ENABLED] == true
+        val loggingEnabled = configuration[key_logging_enabled_compiler_key] == true
 
         // functions visitor
-        val enableFunctionsVisitor = configuration[ENABLE_FUNCTIONS_VISITOR] == true
+        val enableFunctionsVisitor = configuration[enable_functions_visitor_compiler_key] == true
         // functions visitor annotation
-        val functionsVisitorAnnotation = configuration.get(FUNCTIONS_VISITOR_ANNOTATION)
+        val functionsVisitorAnnotation =
+            configuration.get(functions_visitor_annotation_compiler_key).orEmpty()
         // functions visitor path
-        val functionsVisitorPath = configuration.get(FUNCTIONS_VISITOR_PATH)
+        val functionsVisitorPath = configuration.get(functions_visitor_path_compiler_key).orEmpty()
 
         // modifier builder
-        val composeModifierWrapperEnabled = configuration[COMPOSE_MODIFIER_WRAPPER_ENABLED] == true
-        val composeModifierWrapperPath: String? =
-            configuration.get(COMPOSE_MODIFIER_WRAPPER_PATH)
+        val composeModifierWrapperEnabled =
+            configuration[compose_modifier_wrapper_enabled_compiler_key] == true
+
+        val composeModifierWrapperPath: String = configuration.get(
+            compose_modifier_wrapper_path_compiler_key
+        ).orEmpty()
 
         IrGenerationExtension.registerExtension(
             CompiluginGenerationExtension(

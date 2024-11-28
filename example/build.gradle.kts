@@ -11,9 +11,6 @@ plugins {
 
 compilugin {
     enabled.set(true)
-    logging.set(true)
-    composeModifierWrapperEnabled.set(true)
-    composeModifierWrapperPath.set("dev.supersam.android.app.ModifierBuilder.buildModifier")
     functionsVisitorEnabled.set(true)
     functionsVisitorAnnotation.set("TrackIt")
     functionsVisitorPath.set("dev.supersam.android.app.FunctionsVisitor.visit")

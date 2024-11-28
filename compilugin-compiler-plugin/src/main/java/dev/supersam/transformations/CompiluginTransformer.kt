@@ -11,16 +11,20 @@ internal class CompiluginTransformer(
     private val pluginContext: IrPluginContext,
     private val logger: DebugLogger,
     private val composeModifierWrapperEnabled: Boolean,
-    private val composeModifierWrapperPath: String?,
+    private val composeModifierWrapperPath: String,
     private val enableFunctionsVisitor: Boolean,
-    private val functionsVisitorAnnotation: String?,
-    private val functionsVisitorPath: String?
+    private val functionsVisitorAnnotation: String,
+    private val functionsVisitorPath: String
 ) : IrElementTransformerVoid() {
 
 
     override fun visitFunction(declaration: IrFunction): IrStatement {
 
-        if (enableFunctionsVisitor && functionsVisitorPath != null) {
+        // functions visitor
+        if (enableFunctionsVisitor
+            && functionsVisitorPath.isNotEmpty()
+            && functionsVisitorAnnotation.isNotEmpty()
+        ) {
             declaration.transformFunctionsVisitor(
                 pluginContext = pluginContext,
                 declaration = declaration,
@@ -30,12 +34,12 @@ internal class CompiluginTransformer(
             )
         }
 
-        if (declaration.isComposable()) {
-            if (composeModifierWrapperEnabled && composeModifierWrapperPath != null) {
+        // modifier builder
+        if (composeModifierWrapperEnabled && composeModifierWrapperPath.isNotEmpty()) {
+            if (declaration.isComposable()) {
                 declaration.transformModifierCompanionObjectAccess(
                     pluginContext = pluginContext,
                     declaration = declaration,
-                    logger = logger,
                     composeModifierWrapperPath = composeModifierWrapperPath
                 )
             }

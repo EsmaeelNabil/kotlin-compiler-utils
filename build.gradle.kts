@@ -1,4 +1,5 @@
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmCompilerOptions
 import org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension
@@ -54,7 +55,9 @@ subprojects {
     }
 
     plugins.withId("com.vanniktech.maven.publish") {
-        configure<MavenPublishBaseExtension> { publishToMavenCentral(automaticRelease = true) }
+        configure<MavenPublishBaseExtension> {
+            publishToMavenCentral(host = SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+        }
 
         // configuration required to produce unique META-INF/*.kotlin_module file names
         tasks.withType<KotlinCompile>().configureEach {
