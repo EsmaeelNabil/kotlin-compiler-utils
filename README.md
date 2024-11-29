@@ -1,6 +1,8 @@
 ## Compilugin
 
-##### Installing
+<br>
+
+#### Installing
 
 ```kotlin
 plugins {
@@ -10,11 +12,23 @@ plugins {
 
 ```
 
+<br>
+
+#### Features
+
+- **Functions Visitor**.
+    - Calls a function inside an object in your code when a specific function you annotated get's called anytime.
+- Mobile Jetpack Compose `Modifier` wrapper.
+    - Overrides the `Modifier` default impl with one you provide for testing or development. 
+
+<br>
+<br>
+
 ---
 
-### How to use the : `Functions Visitor`
+#### How to use the : Functions Visitor
 
-#### build.gradle.kts
+##### build.gradle.kts
 
 - configure the plugin in your `build.gradle.kts` file
 
@@ -31,7 +45,7 @@ compilugin {
 - Create an `Object` that will be called when the function which is annotated with your `Annotation`
   is called.
 
-#### Annotation
+##### Annotation
 
 ```kotlin
 @Retention(AnnotationRetention.BINARY)
@@ -39,7 +53,7 @@ compilugin {
 annotation class TrackIt
 ```
 
-#### Object
+##### Object
 
 ```kotlin
 
@@ -61,7 +75,7 @@ object AnyObjectNameYouWant {
 > [!WARNING]
 > Parameter names are not important, but the types or the order are important.
 
-#### In your code
+##### In your code
 
 ```kotlin
 @TrackIt
@@ -78,6 +92,10 @@ fun anyFunctionName(
 > If you want to use a custom object, make sure to override the `toString()` method for that object.
 
 ---
+
+<br>
+<br>
+<br>
 
 License
 -------
