@@ -10,8 +10,8 @@ internal const val COMPOSE_MODIFIER_WRAPPER_PATH: String = "composeModifierWrapp
 internal const val EXTENSION_NAME: String = "compilugin"
 internal const val COMPILUGIN_PLUGIN_ID: String = "compiluginPlugin"
 
-const val GROUP_ID: String = "dev.supersam.compilugin"
-const val ARTIFACT_ID: String = "compilugin-compiler-plugin"
-const val VERSION: String = "0.0.2"
+public const val GROUP_ID: String = "dev.supersam.compilugin"
+public const val ARTIFACT_ID: String = "compilugin-compiler-plugin"
+public const val VERSION: String = "0.0.2"
 
-const val empty: String = ""
+public const val empty: String = ""

@@ -4,6 +4,7 @@ pluginManagement {
         google()
         gradlePluginPortal()
         mavenCentral()
+        mavenLocal()
     }
 }
 
@@ -12,9 +13,10 @@ dependencyResolutionManagement {
         google()
         gradlePluginPortal()
         mavenCentral()
+        mavenLocal()
     }
     versionCatalogs {
-        create("deps") {
+        create("libs") {
             from(files("gradle/libs.versions.toml"))
         }
     }
@@ -25,9 +27,6 @@ plugins {
 }
 
 
-include(
-    ":compilugin-compiler-plugin",
-    ":compilugin-compiler-plugin-gradle",
-)
+include(":kmp-example")
 
-rootProject.name = "compilugin"
+rootProject.name = "compilugin-example"

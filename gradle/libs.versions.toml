@@ -4,32 +4,23 @@ kotlin = "2.0.21"
 jdk = "21"
 jvmTarget = "11"
 ksp = "2.0.21-1.0.28"
-agp = "8.7.2"
-activityCompose = "1.9.3"
-compose = "1.7.0"
+buildConfig = "5.5.1"
 
 
 [libraries]
 serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.7.3" }
-androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
 autoService-ksp = { module = "dev.zacsweers.autoservice:auto-service-ksp", version = "1.2.0" }
 autoService = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoService" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinCompilerEmbeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
 
-compiluginCompilerPluginGradle = { module = "dev.supersam.compilugin:compilugin-compiler-plugin-gradle" }
-
 
 [plugins]
 kmp = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-compose = { id = "org.jetbrains.compose", version.ref = "compose" }
 mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.30.0" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-
-compilugin = { id = "dev.supersam.compilugin" }
+buildConfig = {id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig"}
 

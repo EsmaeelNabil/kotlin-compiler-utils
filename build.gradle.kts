@@ -7,33 +7,38 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-buildscript {
-    dependencies {
-        // Include our included build
-        classpath(libs.compiluginCompilerPluginGradle)
-    }
-}
+val mavenPublishPluginId = deps.plugins.mavenPublish.get().pluginId
+val jvmTargetVersion = deps.versions.jvmTarget
+val buildConfigPluginId = deps.plugins.buildConfig.get().pluginId
 
 plugins {
-    alias(libs.plugins.kotlin.jvm) apply false
-    alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.kmp) apply false
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.compose.compiler) apply false
-    alias(libs.plugins.compose) apply false
+    alias(deps.plugins.kotlin.jvm) apply false
+    alias(deps.plugins.ksp) apply false
+    alias(deps.plugins.kmp) apply false
     alias(deps.plugins.mavenPublish) apply false
+    alias(deps.plugins.buildConfig) apply false
 }
 
 subprojects {
     group = project.property("GROUP") as String
     version = project.property("VERSION_NAME") as String
 
+    // Apply the buildConfig plugin to all subprojects
+    apply(plugin = buildConfigPluginId)
+    // configure the buildConfig plugin to generate the fields we need
+    extensions.configure<com.github.gmazzo.buildconfig.BuildConfigExtension> {
+        packageName.set("dev.supersam.compilugin")
+        documentation.set("Generated at build time")
+
+        buildConfigField<String>("COMPILUGIN_PLUGIN_ID", "compiluginPlugin")
+    }
+
     pluginManager.withPlugin("java") {
         configure<JavaPluginExtension> {
-            toolchain { languageVersion.set(libs.versions.jdk.map(JavaLanguageVersion::of)) }
+            toolchain { languageVersion.set(deps.versions.jdk.map(JavaLanguageVersion::of)) }
         }
         tasks.withType<JavaCompile>().configureEach {
-            options.release.set(libs.versions.jvmTarget.map(String::toInt))
+            options.release.set(jvmTargetVersion.map(String::toInt))
         }
     }
 
@@ -42,23 +47,16 @@ subprojects {
             compilerOptions {
                 progressiveMode.set(true)
                 if (this is KotlinJvmCompilerOptions) {
-                    if (project.name != "example") {
-                        jvmTarget.set(libs.versions.jvmTarget.map(JvmTarget::fromTarget))
-                    }
+                    jvmTarget.set(jvmTargetVersion.map(JvmTarget::fromTarget))
                     freeCompilerArgs.addAll("-Xjvm-default=all")
                 }
             }
         }
-        if ("example" !in project.path) {
-            configure<KotlinProjectExtension> { explicitApi() }
-        }
+
+        configure<KotlinProjectExtension> { explicitApi() }
     }
 
-    plugins.withId("com.vanniktech.maven.publish") {
-        configure<MavenPublishBaseExtension> {
-            publishToMavenCentral(host = SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
-        }
-
+    plugins.withId(mavenPublishPluginId) {
         // configuration required to produce unique META-INF/*.kotlin_module file names
         tasks.withType<KotlinCompile>().configureEach {
             compilerOptions { moduleName.set(project.property("POM_ARTIFACT_ID") as String) }

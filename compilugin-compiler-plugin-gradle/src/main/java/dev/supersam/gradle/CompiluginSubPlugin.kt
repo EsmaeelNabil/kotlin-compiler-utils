@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinCompilerPluginSupportPlugin
 import org.jetbrains.kotlin.gradle.plugin.SubpluginArtifact
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 
-class CompiluginSubPlugin : KotlinCompilerPluginSupportPlugin {
+public class CompiluginSubPlugin : KotlinCompilerPluginSupportPlugin {
 
     override fun apply(target: Project) {
         target.extensions.create(EXTENSION_NAME, CompiluginPluginExtension::class.java)
@@ -15,7 +15,7 @@ class CompiluginSubPlugin : KotlinCompilerPluginSupportPlugin {
 
     override fun getCompilerPluginId(): String = COMPILUGIN_PLUGIN_ID
 
-    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>) = true
+    override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
 
     override fun getPluginArtifact(): SubpluginArtifact = SubpluginArtifact(
         groupId = GROUP_ID,

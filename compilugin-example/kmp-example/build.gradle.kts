@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(deps.plugins.kmp)
     alias(deps.plugins.compose.compiler)
@@ -17,15 +15,6 @@ compilugin {
 }
 
 kotlin {
-    jvm {
-        compilations.configureEach {
-            compileTaskProvider.configure {
-                compilerOptions {
-                    jvmTarget.set(JvmTarget.JVM_17)
-                }
-            }
-        }
-    }
     androidTarget()
     sourceSets {
 
@@ -67,11 +56,4 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-}
-
-configurations.configureEach {
-    resolutionStrategy.dependencySubstitution {
-        substitute(module("dev.supersam.compilugin:compilugin-compiler-plugin"))
-            .using(project(":compilugin-compiler-plugin"))
-    }
 }
