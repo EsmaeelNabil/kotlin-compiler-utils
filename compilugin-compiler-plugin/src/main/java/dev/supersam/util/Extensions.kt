@@ -1,6 +1,8 @@
 package dev.supersam.util
 
+import org.jetbrains.kotlin.backend.common.extensions.FirIncompatiblePluginAPI
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.ir.InternalSymbolFinderAPI
 import org.jetbrains.kotlin.ir.builders.IrBuilderWithScope
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irGet
@@ -13,6 +15,7 @@ import org.jetbrains.kotlin.ir.expressions.impl.IrGetObjectValueImpl
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
+import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classFqName
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.constructors
@@ -68,9 +71,9 @@ internal fun IrClassSymbol?.findSingleFunction(functionName: String): IrSimpleFu
         ?: error("$functionName was not found inside class: ${this?.owner?.name?.asString()}")
 
 
-@OptIn(UnsafeDuringIrConstructionAPI::class)
+@OptIn(UnsafeDuringIrConstructionAPI::class, InternalSymbolFinderAPI::class)
 internal fun IrBuilderWithScope.buildMapOfParamsCall(declaration: IrFunction): IrCall {
-    val mapOfFunction = context.irBuiltIns.findFunctions(
+    val mapOfFunction = context.irBuiltIns.symbolFinder.findFunctions(
         Name.identifier("mapOf"),
         FqName("kotlin.collections")
     ).firstOrNull {
@@ -80,7 +83,7 @@ internal fun IrBuilderWithScope.buildMapOfParamsCall(declaration: IrFunction): I
 
     return irCall(mapOfFunction).apply {
         val pairClass =
-            context.irBuiltIns.findClass(Name.identifier("Pair"), FqName("kotlin"))
+            context.irBuiltIns.symbolFinder.findClass(Name.identifier("Pair"), FqName("kotlin"))
                 ?: error("Pair class not found")
         val pairConstructor = pairClass.owner.constructors.firstOrNull()
             ?: error("Pair constructor not found")

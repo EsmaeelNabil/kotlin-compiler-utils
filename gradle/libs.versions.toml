@@ -1,9 +1,9 @@
 [versions]
 autoService = "1.1.1"
-kotlin = "2.0.21"
-jdk = "21"
+kotlin = "2.1.20"
+jdk = "23"
 jvmTarget = "11"
-ksp = "2.0.21-1.0.28"
+ksp = "2.1.20-1.0.31"
 buildConfig = "5.5.1"
 
 
