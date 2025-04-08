@@ -58,6 +58,9 @@ subprojects {
 
     plugins.withId(mavenPublishPluginId) {
         // configuration required to produce unique META-INF/*.kotlin_module file names
+        configure<MavenPublishBaseExtension> {
+            publishToMavenCentral(host = SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
+        }
         tasks.withType<KotlinCompile>().configureEach {
             compilerOptions { moduleName.set(project.property("POM_ARTIFACT_ID") as String) }
         }

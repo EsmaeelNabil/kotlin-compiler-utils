@@ -44,7 +44,6 @@ gradlePlugin {
 
 mavenPublishing {
     configure(GradlePlugin(javadocJar = JavadocJar.Javadoc(), sourcesJar = true))
-    publishToMavenCentral(host = SonatypeHost.CENTRAL_PORTAL, automaticRelease = true)
 }
 
 
