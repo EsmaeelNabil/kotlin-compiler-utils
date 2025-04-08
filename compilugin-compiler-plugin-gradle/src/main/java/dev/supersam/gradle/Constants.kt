@@ -12,6 +12,6 @@ internal const val COMPILUGIN_PLUGIN_ID: String = "compiluginPlugin"
 
 public const val GROUP_ID: String = "dev.supersam.compilugin"
 public const val ARTIFACT_ID: String = "compilugin-compiler-plugin"
-public const val VERSION: String = "0.0.3"
+public const val VERSION: String = "0.0.4"
 
 public const val empty: String = ""
