@@ -5,7 +5,7 @@ jdk = "23"
 jvmTarget = "11"
 ksp = "2.1.20-1.0.31"
 buildConfig = "5.5.1"
-
+kotlinCompileTesting = "0.7.0"
 
 [libraries]
 serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.7.3" }
@@ -14,7 +14,11 @@ autoService-ksp = { module = "dev.zacsweers.autoservice:auto-service-ksp", versi
 autoService = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoService" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 kotlinCompilerEmbeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
-
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlin-aptEmbeddable = { module = "org.jetbrains.kotlin:kotlin-annotation-processing-embeddable", version.ref = "kotlin" }
+junit = { module = "junit:junit", version = "4.13.2" }
+truth = { module = "com.google.truth:truth", version = "1.4.4" }
+kotlinCompileTesting = { module = "dev.zacsweers.kctfork:core", version.ref = "kotlinCompileTesting" }
 
 [plugins]
 kmp = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
