@@ -2,29 +2,16 @@ package dev.supersam
 
 import com.google.common.truth.Truth.assertThat
 import com.tschuchort.compiletesting.KotlinCompilation
-import com.tschuchort.compiletesting.KotlinCompilation.ExitCode
-import com.tschuchort.compiletesting.PluginOption
-import com.tschuchort.compiletesting.SourceFile
 import com.tschuchort.compiletesting.SourceFile.Companion.kotlin
-import dev.supersam.plugin.CompiluginCommandLineProcessor
-import dev.supersam.plugin.CompiluginComponentRegistrar
-import dev.supersam.plugin.cliOptions
-import dev.supersam.util.*
-import org.jetbrains.kotlin.compiler.plugin.CommandLineProcessor
+import dev.supersam.util.ENABLED
+import dev.supersam.util.FUNCTIONS_VISITOR_ENABLED
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
-import org.jetbrains.kotlin.config.JvmTarget
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.TemporaryFolder
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 
 @OptIn(ExperimentalCompilerApi::class)
-class SimpleFunctionVisitorTest {
-
-    @Rule
-    @JvmField
-    var temporaryFolder: TemporaryFolder = TemporaryFolder()
+class FunctionVisitorTest : BaseCompilerPluginTest() {
 
     private val trackFunctionAnnotation = kotlin(
         "TrackIt.kt",
@@ -182,8 +169,14 @@ class SimpleFunctionVisitorTest {
         System.setOut(PrintStream(outputStream))
 
         try {
-            val result = compile(testClass, complexTestClass, testRunner)
-            assertThat(result.exitCode).isEqualTo(ExitCode.OK)
+            val result = compile(
+                trackFunctionAnnotation,
+                functionsVisitorImplementation,
+                testClass,
+                complexTestClass,
+                testRunner,
+            )
+            assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
 
             val mainClass = result.classLoader.loadClass("dev.supersam.test.TestRunnerKt")
             mainClass.getMethod("main").invoke(null)
@@ -215,8 +208,14 @@ class SimpleFunctionVisitorTest {
         System.setOut(PrintStream(outputStream))
 
         try {
-            val result = compile(testClass, complexTestClass, testRunner)
-            assertThat(result.exitCode).isEqualTo(ExitCode.OK)
+            val result = compile(
+                trackFunctionAnnotation,
+                functionsVisitorImplementation,
+                testClass,
+                complexTestClass,
+                testRunner,
+            )
+            assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
 
             val mainClass = result.classLoader.loadClass("dev.supersam.test.TestRunnerKt")
             mainClass.getMethod("main").invoke(null)
@@ -243,10 +242,12 @@ class SimpleFunctionVisitorTest {
         try {
             val result = compileWithOptions(
                 mapOf(ENABLED to "false"),
+                trackFunctionAnnotation,
+                functionsVisitorImplementation,
                 disabledTestClass,
                 disabledPluginRunner,
             )
-            assertThat(result.exitCode).isEqualTo(ExitCode.OK)
+            assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
 
             val mainClass = result.classLoader.loadClass("dev.supersam.test.DisabledPluginRunnerKt")
             mainClass.getMethod("main").invoke(null)
@@ -271,10 +272,12 @@ class SimpleFunctionVisitorTest {
         try {
             val result = compileWithOptions(
                 mapOf(FUNCTIONS_VISITOR_ENABLED to "false"),
+                trackFunctionAnnotation,
+                functionsVisitorImplementation,
                 visitorDisabledTestClass,
                 disabledVisitorRunner,
             )
-            assertThat(result.exitCode).isEqualTo(ExitCode.OK)
+            assertThat(result.exitCode).isEqualTo(KotlinCompilation.ExitCode.OK)
 
             val mainClass = result.classLoader.loadClass("dev.supersam.test.DisabledVisitorRunnerKt")
             mainClass.getMethod("main").invoke(null)
@@ -290,48 +293,4 @@ class SimpleFunctionVisitorTest {
     }
 
     private fun countOccurrences(text: String, subtext: String): Int = text.split(subtext).size - 1
-
-    private fun prepareCompilation(
-        options: Map<String, String> = emptyMap(),
-        vararg sourceFiles: SourceFile,
-    ): KotlinCompilation = KotlinCompilation().apply {
-        workingDir = temporaryFolder.root
-        compilerPluginRegistrars = listOf(CompiluginComponentRegistrar())
-        val processor = CompiluginCommandLineProcessor()
-        commandLineProcessors = listOf(processor)
-
-        val defaultOptions = mapOf(
-            ENABLED to "true",
-            LOGGING to "true",
-            FUNCTIONS_VISITOR_ENABLED to "true",
-            FUNCTIONS_VISITOR_ANNOTATION to "dev.supersam.test.TrackIt",
-            FUNCTIONS_VISITOR_PATH to "dev.supersam.test.FunctionsVisitor.visit",
-        )
-
-        val effectiveOptions = defaultOptions + options
-
-        pluginOptions = effectiveOptions.map { (key, value) ->
-            processor.option(key, value)
-        }
-
-        inheritClassPath = true
-        sources = sourceFiles.asList() +
-            listOf(
-                trackFunctionAnnotation,
-                functionsVisitorImplementation,
-            )
-        verbose = false
-        jvmTarget = JvmTarget.fromString("11")!!.description
-    }
-
-    private fun CommandLineProcessor.option(key: String, value: String): PluginOption {
-        val cliOption = cliOptions.find { it.optionName == key }
-            ?: error("Unknown option: $key")
-        return PluginOption(pluginId, cliOption.optionName, value)
-    }
-
-    private fun compile(vararg sourceFiles: SourceFile) = prepareCompilation(emptyMap(), *sourceFiles).compile()
-
-    private fun compileWithOptions(options: Map<String, String>, vararg sourceFiles: SourceFile) =
-        prepareCompilation(options, *sourceFiles).compile()
 }
