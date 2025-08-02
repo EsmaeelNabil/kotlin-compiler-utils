@@ -14,6 +14,7 @@ dependencies {
     testImplementation(deps.kotlin.stdlib)
     testImplementation(deps.kotlinCompilerEmbeddable)
     testImplementation(libs.kotlin.aptEmbeddable)
+    testImplementation(libs.kotlinx.coroutines.core)
     testImplementation(deps.kotlinCompileTesting)
     testImplementation(deps.junit)
     testImplementation(deps.truth)

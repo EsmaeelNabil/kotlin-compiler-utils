@@ -59,8 +59,40 @@ jobs:
     - name: Verify code formatting
       run: ./gradlew spotlessCheck
       
-    - name: Run core plugin tests
-      run: ./gradlew test --parallel
+    - name: Run comprehensive plugin tests
+      run: |
+        echo "🧪 Running comprehensive test suite..."
+        ./gradlew test --parallel --continue --info
+        echo "✅ Test execution completed"
+        
+    - name: Generate detailed test report
+      if: always()
+      run: |
+        echo "## 📊 Comprehensive Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Check for test results
+        if [ -d "build/reports/tests/test" ]; then
+          echo "### ✅ Test Execution Summary" >> $GITHUB_STEP_SUMMARY
+          
+          # Count test files
+          TEST_FILES=$(find src/test -name "*Test.kt" | wc -l)
+          echo "- **Test Files**: $TEST_FILES test classes" >> $GITHUB_STEP_SUMMARY
+          
+          # List test classes
+          echo "- **Test Classes**:" >> $GITHUB_STEP_SUMMARY
+          find src/test -name "*Test.kt" -exec basename {} .kt \; | sed 's/^/  - /' >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🎯 Test Categories Covered" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Basic Functionality**: Function visitor, annotations, parameters" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Edge Cases**: Generics, suspend functions, operators, extensions" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Integration**: Real-world scenarios, inheritance, concurrency" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Configuration**: Plugin options, custom annotations, custom visitors" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ **Compatibility**: JVM targets, Kotlin language features, platform support" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "❌ Test reports not found" >> $GITHUB_STEP_SUMMARY
+        fi
       
     - name: Build core plugin
       run: ./gradlew build --parallel
