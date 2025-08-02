@@ -72,7 +72,7 @@ jobs:
         cache-read-only: false
         
     - name: Build core plugin first
-      run: ./gradlew publishToMavenLocal --parallel
+      run: ./gradlew publishToMavenLocal --parallel -PRELEASE_SIGNING_ENABLED=false
       
     - name: Build Android example
       working-directory: ./android-example
@@ -115,7 +115,7 @@ jobs:
         cache-read-only: false
         
     - name: Build core plugin first
-      run: ./gradlew publishToMavenLocal --parallel
+      run: ./gradlew publishToMavenLocal --parallel -PRELEASE_SIGNING_ENABLED=false
       
     - name: Build KMP example
       working-directory: ./compilugin-example
@@ -135,6 +135,7 @@ jobs:
     name: Integration Tests
     runs-on: ubuntu-latest
     needs: [core-plugin, android-example, kmp-example]
+    if: success()
     
     steps:
     - name: Checkout code
@@ -156,7 +157,7 @@ jobs:
         
     - name: Run full integration build
       run: |
-        ./gradlew publishToMavenLocal --parallel
+        ./gradlew publishToMavenLocal --parallel -PRELEASE_SIGNING_ENABLED=false
         cd android-example && ./gradlew build --parallel
         cd ../compilugin-example && ./gradlew build --parallel
       
