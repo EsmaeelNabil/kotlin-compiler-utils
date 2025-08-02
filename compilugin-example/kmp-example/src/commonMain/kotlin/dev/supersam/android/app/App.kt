@@ -14,7 +14,7 @@ fun App(modifier: Modifier) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         HomeScreen(Modifier)
     }
@@ -25,7 +25,7 @@ fun HomeScreen(modifier: Modifier) {
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text("Home Screen!")
         ScreenContent(Modifier)
@@ -53,10 +53,7 @@ data class MoreInfo(val name: String) {
     val height: Double = 2000.0
     val list: List<String> = listOf("Sam", "Rosalie")
 
-
-    override fun toString(): String {
-        return "MoreInfo(name='$name', age='$age', life=$life, height=$height, list=$list)"
-    }
+    override fun toString(): String = "MoreInfo(name='$name', age='$age', life=$life, height=$height, list=$list)"
 }
 
 data class SomeMoreInformation(
@@ -64,7 +61,7 @@ data class SomeMoreInformation(
     val age: String,
     val life: Boolean,
     val height: Double,
-    val list: List<String>
+    val list: List<String>,
 )
 
 @TrackIt
@@ -74,7 +71,5 @@ fun trackMePleaseFunction(
     life: Boolean,
     height: Double,
     moreInfo: MoreInfo,
-    list: List<SomeMoreInformation>
-): String {
-    return "Hello, $name, $age, $life, $height, $list"
-}
+    list: List<SomeMoreInformation>,
+): String = "Hello, $name, $age, $life, $height, $list"

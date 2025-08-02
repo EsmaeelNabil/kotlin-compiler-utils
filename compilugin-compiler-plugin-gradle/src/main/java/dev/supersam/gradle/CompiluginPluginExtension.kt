@@ -9,6 +9,4 @@ public open class CompiluginPluginExtension internal constructor(factory: Object
     public val functionsVisitorEnabled: Property<Boolean> = factory.property { set(false) }
     public val functionsVisitorPath: Property<String> = factory.property { set(empty) }
     public val functionsVisitorAnnotation: Property<String> = factory.property { set(empty) }
-    public val composeModifierWrapperEnabled: Property<Boolean> = factory.property { set(false) }
-    public val composeModifierWrapperPath: Property<String> = factory.property { set(empty) }
 }

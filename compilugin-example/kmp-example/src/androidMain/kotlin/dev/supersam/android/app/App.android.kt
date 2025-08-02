@@ -25,22 +25,22 @@ class AppActivity : ComponentActivity() {
                     age = "option",
                     life = false,
                     height = 2.3,
-                    list = listOf("Sam", "Rosalie")
+                    list = listOf("Sam", "Rosalie"),
                 ),
                 SomeMoreInformation(
                     name = "Rosalie Hester",
                     age = "option",
                     life = false,
                     height = 2.3,
-                    list = listOf("Sam", "Rosalie")
+                    list = listOf("Sam", "Rosalie"),
                 ),
                 SomeMoreInformation(
                     name = "Rosalie Hester",
                     age = "option",
                     life = false,
                     height = 2.3,
-                    list = listOf("Sam", "Rosalie")
-                )
+                    list = listOf("Sam", "Rosalie"),
+                ),
             ),
         )
         enableEdgeToEdge()

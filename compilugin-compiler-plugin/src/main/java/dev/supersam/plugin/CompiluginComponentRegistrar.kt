@@ -36,23 +36,13 @@ public class CompiluginComponentRegistrar : CompilerPluginRegistrar() {
         // functions visitor path
         val functionsVisitorPath = configuration.get(functions_visitor_path_compiler_key).orEmpty()
 
-        // modifier builder
-        val composeModifierWrapperEnabled =
-            configuration[compose_modifier_wrapper_enabled_compiler_key] == true
-
-        val composeModifierWrapperPath: String = configuration.get(
-            compose_modifier_wrapper_path_compiler_key
-        ).orEmpty()
-
         IrGenerationExtension.registerExtension(
             CompiluginGenerationExtension(
                 debugLogger = DebugLogger(loggingEnabled, messageCollector),
-                composeModifierWrapperEnabled = composeModifierWrapperEnabled,
-                composeModifierWrapperPath = composeModifierWrapperPath,
                 enableFunctionsVisitor = enableFunctionsVisitor,
                 functionsVisitorAnnotation = functionsVisitorAnnotation,
-                functionsVisitorPath = functionsVisitorPath
-            )
+                functionsVisitorPath = functionsVisitorPath,
+            ),
         )
     }
 }

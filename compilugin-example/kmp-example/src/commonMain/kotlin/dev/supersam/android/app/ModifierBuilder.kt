@@ -8,18 +8,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 
-
 object ModifierBuilder {
-    fun buildModifier(entryPoint: String): Modifier {
-        return Modifier
-            .semantics {
-                contentDescription = entryPoint
+    fun buildModifier(entryPoint: String): Modifier = Modifier
+        .semantics {
+            contentDescription = entryPoint
+        }
+        .background(Color.Red)
+        .composed {
+            this.clickable {
+                println("Composable Function name: $entryPoint")
             }
-            .background(Color.Red)
-            .composed {
-                this.clickable {
-                    println("Composable Function name: $entryPoint")
-                }
-            }
-    }
+        }
 }

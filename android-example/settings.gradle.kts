@@ -21,6 +21,5 @@ dependencyResolutionManagement {
     }
 }
 
-
 rootProject.name = "android-example"
 include(":app")

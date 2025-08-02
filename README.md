@@ -18,11 +18,7 @@ plugins {
 
 - **Functions Visitor**.
     - Calls a function inside an object in your code when a specific function you annotated get's called anytime.
-- Mobile Jetpack Compose `Modifier` wrapper.
-    - Overrides the `Modifier` default impl with one you provide for testing or development. 
 
-<br>
-<br>
 
 ---
 

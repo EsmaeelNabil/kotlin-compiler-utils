@@ -1,11 +1,11 @@
 [versions]
 autoService = "1.1.1"
-kotlin = "2.1.20"
+kotlin = "2.2.0"
 jdk = "23"
 jvmTarget = "11"
-ksp = "2.1.20-1.0.31"
+ksp = "2.2.0-2.0.2"
 buildConfig = "5.5.1"
-kotlinCompileTesting = "0.7.0"
+kotlinCompileTesting = "0.8.0"
 
 [libraries]
 serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.7.3" }
@@ -27,4 +27,5 @@ mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.31.0" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 buildConfig = {id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig"}
+spotless = { id = "com.diffplug.spotless", version = "7.0.4" }
 

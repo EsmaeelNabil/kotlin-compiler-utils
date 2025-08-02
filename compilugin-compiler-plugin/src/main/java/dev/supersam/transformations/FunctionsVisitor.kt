@@ -20,7 +20,6 @@ import org.jetbrains.kotlin.ir.util.dumpKotlinLike
 import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.ir.util.statements
 
-
 internal fun IrFunction.transformFunctionsVisitor(
     pluginContext: IrPluginContext,
     declaration: IrFunction,
@@ -32,16 +31,16 @@ internal fun IrFunction.transformFunctionsVisitor(
     val hasAnnotation = declaration.annotations.any {
         it.dump().contains(functionsVisitorAnnotation)
     }
-    if (!hasAnnotation)
+    if (!hasAnnotation) {
         return
+    }
 
     val classPath = functionsVisitorPath.substringBeforeLast(".")
     val functionsVisitorObject: IrClassSymbol = pluginContext.findClass(classPath)
     val visitFunctionInsideObject = functionsVisitorObject.findSingleFunction(
-        functionsVisitorPath.substringAfterLast(".")
+        functionsVisitorPath.substringAfterLast("."),
     )
     val functionVisitorObjectInstance = functionsVisitorObject.getObjectValue()
-
 
     declaration.body?.let { originalBody ->
         declaration.body = DeclarationIrBuilder(pluginContext, declaration.symbol).irBlockBody {
@@ -50,10 +49,11 @@ internal fun IrFunction.transformFunctionsVisitor(
             // Adding the function visitor call
             +irCall(visitFunctionInsideObject).apply {
                 dispatchReceiver = functionVisitorObjectInstance
-                putValueArgument(0, irString(declaration.name.asString()))
-                putValueArgument(1, irString(parent.kotlinFqName.asString()))
-                putValueArgument(2, irString(declaration.dumpKotlinLike()))
-                putValueArgument(3, buildMapOfParamsCall(declaration))
+
+                arguments[1] = irString(declaration.name.asString())
+                arguments[2] = irString(parent.kotlinFqName.asString())
+                arguments[3] = irString(declaration.dumpKotlinLike())
+                arguments[4] = buildMapOfParamsCall(declaration)
             }
 
             logger.log("Added function visitor call for ${declaration.name}")

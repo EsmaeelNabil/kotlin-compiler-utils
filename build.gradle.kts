@@ -7,9 +7,15 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinBasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mavenPublishPluginId = deps.plugins.mavenPublish.get().pluginId
+val mavenPublishPluginId =
+    deps.plugins.mavenPublish
+        .get()
+        .pluginId
 val jvmTargetVersion = deps.versions.jvmTarget
-val buildConfigPluginId = deps.plugins.buildConfig.get().pluginId
+val buildConfigPluginId =
+    deps.plugins.buildConfig
+        .get()
+        .pluginId
 
 plugins {
     alias(deps.plugins.kotlin.jvm) apply false
@@ -17,6 +23,7 @@ plugins {
     alias(deps.plugins.kmp) apply false
     alias(deps.plugins.mavenPublish) apply false
     alias(deps.plugins.buildConfig) apply false
+    alias(deps.plugins.spotless)
 }
 
 subprojects {
@@ -67,7 +74,29 @@ subprojects {
     }
 }
 
-
 System.setProperty("kotlin.compiler.execution.strategy", "in-process")
 
-
+spotless {
+    kotlin {
+        target("**/*.kt")
+        targetExclude("**/build/**")
+        ktlint("1.7.0").editorConfigOverride(
+            mapOf(
+                "max_line_length" to "120",
+                "ktlint_standard_no-wildcard-imports" to "disabled",
+                "ktlint_standard_filename" to "disabled",
+                "ktlint_standard_function-naming" to "disabled",
+                "ktlint_standard_property-naming" to "disabled",
+            ),
+        )
+        endWithNewline()
+        trimTrailingWhitespace()
+    }
+    kotlinGradle {
+        target("**/*.gradle.kts")
+        targetExclude("**/build/**")
+        ktlint("1.7.0")
+        endWithNewline()
+        trimTrailingWhitespace()
+    }
+}

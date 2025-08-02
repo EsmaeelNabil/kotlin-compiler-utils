@@ -26,7 +26,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding).clickable {
                             trackMePlease("Something being passed")
                             trackMePleas3e("Something being passed")
-                        }
+                        },
                     )
                 }
             }
@@ -35,21 +35,17 @@ class MainActivity : ComponentActivity() {
 }
 
 @TrackIt
-fun trackMePlease(name:String): String {
-    return "Ac $name"
-}
+fun trackMePlease(name: String): String = "Ac $name"
 
 @TrackIt
-fun trackMePleas3e(name:String): String {
-    return "Ac $name"
-}
+fun trackMePleas3e(name: String): String = "Ac $name"
 
 @TrackIt
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     Text(
         text = "Hello $name!",
-        modifier = modifier
+        modifier = modifier,
     )
 }
 

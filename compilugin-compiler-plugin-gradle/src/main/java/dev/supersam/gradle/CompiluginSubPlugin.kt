@@ -20,9 +20,8 @@ public class CompiluginSubPlugin : KotlinCompilerPluginSupportPlugin {
     override fun getPluginArtifact(): SubpluginArtifact = SubpluginArtifact(
         groupId = GROUP_ID,
         artifactId = ARTIFACT_ID,
-        version = VERSION
+        version = VERSION,
     )
-
 
     override fun applyToCompilation(kotlinCompilation: KotlinCompilation<*>): Provider<List<SubpluginOption>> {
         val project = kotlinCompilation.target.project
@@ -36,10 +35,6 @@ public class CompiluginSubPlugin : KotlinCompilerPluginSupportPlugin {
         val functionsVisitorAnnotation = extension.functionsVisitorAnnotation.get()
         val functionsVisitorPath = extension.functionsVisitorPath.get()
 
-        val composeModifierWrapperEnabled = extension.composeModifierWrapperEnabled.get().toString()
-        val composeModifierWrapperPath = extension.composeModifierWrapperPath.get()
-
-
         return kotlinCompilation.target.project.provider {
             mutableListOf(
                 SubpluginOption(ENABLED, enabled),
@@ -47,10 +42,7 @@ public class CompiluginSubPlugin : KotlinCompilerPluginSupportPlugin {
                 SubpluginOption(FUNCTIONS_VISITOR_ENABLED, functionsVisitorEnabled),
                 SubpluginOption(FUNCTIONS_VISITOR_ANNOTATION, functionsVisitorAnnotation),
                 SubpluginOption(FUNCTIONS_VISITOR_PATH, functionsVisitorPath),
-                SubpluginOption(COMPOSE_MODIFIER_WRAPPER_ENABLED, composeModifierWrapperEnabled),
-                SubpluginOption(COMPOSE_MODIFIER_WRAPPER_PATH, composeModifierWrapperPath)
             )
         }
     }
-
 }
