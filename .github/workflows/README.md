@@ -48,6 +48,16 @@ This directory contains GitHub Actions workflows for the Compilugin project.
 - Checks for dependency updates
 - Generates reports for outdated dependencies
 
+## GitHub Actions Versions Used
+
+All workflows use the latest stable versions as of 2025:
+- **actions/checkout**: v4
+- **actions/setup-java**: v4 
+- **gradle/actions/setup-gradle**: v4 (replaces deprecated setup-gradle@v3)
+- **android-actions/setup-android**: v3
+- **actions/upload-artifact**: v4 (required since v3 deprecated Jan 30, 2025)
+- **softprops/action-gh-release**: v2 (replaces deprecated actions/create-release@v1)
+
 ## Setup Requirements
 
 For the release workflow to work, the following secrets need to be configured in GitHub:

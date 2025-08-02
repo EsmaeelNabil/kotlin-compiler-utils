@@ -35,7 +35,7 @@ jobs:
         java-version: '17'
         
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
       with:
         cache-read-only: false
         
@@ -122,12 +122,10 @@ jobs:
         echo "✅ Successfully published to Maven Central!"
         
     - name: Create GitHub Release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v2
       with:
         tag_name: v${{ github.event.inputs.version }}
-        release_name: Release v${{ github.event.inputs.version }}
+        name: Release v${{ github.event.inputs.version }}
         body: |
           ## 🚀 Release v${{ github.event.inputs.version }}
           

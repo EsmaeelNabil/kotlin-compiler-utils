@@ -29,7 +29,7 @@ jobs:
         java-version: '17'
         
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
       with:
         cache-read-only: false
         
@@ -93,29 +93,25 @@ jobs:
       uses: android-actions/setup-android@v3
       
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
       with:
         cache-read-only: false
         
     - name: Build core plugin first
       run: ./gradlew publishToMavenLocal --parallel -PRELEASE_SIGNING_ENABLED=false
       
+    - name: Make Android gradlew executable
+      working-directory: ./android-example
+      run: chmod +x gradlew
+      
     - name: Build Android example
       working-directory: ./android-example
-      run: ./gradlew build --parallel
+      run: ./gradlew build --parallel --no-daemon --no-configuration-cache
+      timeout-minutes: 10
       
     - name: Run Android example tests
-      working-directory: ./android-example
+      working-directory: ./android-example  
       run: ./gradlew test --parallel
-      
-    - name: Upload Android build artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: android-example-artifacts
-        path: |
-          android-example/app/build/outputs/
-          android-example/**/build/reports/tests/
 
   # Job 3: KMP Example Build
   kmp-example:
@@ -136,25 +132,21 @@ jobs:
       uses: android-actions/setup-android@v3
       
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
       with:
         cache-read-only: false
         
     - name: Build core plugin first
       run: ./gradlew publishToMavenLocal --parallel -PRELEASE_SIGNING_ENABLED=false
       
+    - name: Make KMP gradlew executable
+      working-directory: ./compilugin-example
+      run: chmod +x gradlew
+      
     - name: Build KMP example
       working-directory: ./compilugin-example
-      run: ./gradlew build --parallel
-      
-    - name: Upload KMP build artifacts
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: kmp-example-artifacts
-        path: |
-          compilugin-example/**/build/outputs/
-          compilugin-example/**/build/reports/
+      run: ./gradlew build --parallel --no-daemon --no-configuration-cache
+      timeout-minutes: 10
 
   # Job 4: Integration Tests (depends on all other jobs)
   integration:
@@ -177,15 +169,16 @@ jobs:
       uses: android-actions/setup-android@v3
       
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
       with:
         cache-read-only: false
         
     - name: Run full integration build
       run: |
         ./gradlew publishToMavenLocal --parallel -PRELEASE_SIGNING_ENABLED=false
-        cd android-example && ./gradlew build --parallel
-        cd ../compilugin-example && ./gradlew build --parallel
+        cd android-example && chmod +x gradlew && ./gradlew build --parallel --no-daemon --no-configuration-cache
+        cd ../compilugin-example && chmod +x gradlew && ./gradlew build --parallel --no-daemon --no-configuration-cache
+      timeout-minutes: 15
       
     - name: Verify all builds successful
       run: echo "All modules built successfully!"
@@ -209,7 +202,7 @@ jobs:
         java-version: '17'
         
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+      uses: gradle/actions/setup-gradle@v4
       with:
         cache-read-only: false
         
