@@ -20,6 +20,19 @@ import org.jetbrains.kotlin.ir.util.dumpKotlinLike
 import org.jetbrains.kotlin.ir.util.kotlinFqName
 import org.jetbrains.kotlin.ir.util.statements
 
+/**
+ * Transforms a function to add functions visitor functionality.
+ *
+ * This function modifies the IR of functions that are annotated with the specified annotation
+ * to call a visitor function at the beginning of their execution. The visitor function is called
+ * with metadata about the function being executed.
+ *
+ * @param pluginContext The IR plugin context for accessing compiler services
+ * @param declaration The function declaration to potentially transform
+ * @param logger Debug logger for outputting transformation information
+ * @param functionsVisitorPath The full path to the visitor function (e.g., "com.example.Visitor.visit")
+ * @param functionsVisitorAnnotation The annotation to look for on functions
+ */
 internal fun IrFunction.transformFunctionsVisitor(
     pluginContext: IrPluginContext,
     declaration: IrFunction,
@@ -46,7 +59,6 @@ internal fun IrFunction.transformFunctionsVisitor(
         declaration.body = DeclarationIrBuilder(pluginContext, declaration.symbol).irBlockBody {
             logger.log("Building new body for ${declaration.name}")
 
-            // Adding the function visitor call
             +irCall(visitFunctionInsideObject).apply {
                 dispatchReceiver = functionVisitorObjectInstance
 
@@ -58,7 +70,6 @@ internal fun IrFunction.transformFunctionsVisitor(
 
             logger.log("Added function visitor call for ${declaration.name}")
 
-            // Adding the original body statements
             originalBody.statements.forEach { statement ->
                 +statement
             }

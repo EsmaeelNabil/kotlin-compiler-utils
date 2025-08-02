@@ -18,8 +18,11 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 
 /**
- * Returns an [IrClassSymbol] for the given class full dotted path.
- * classFullDottedPath: String - full dotted path of the class: "com.example.MyClass"
+ * Finds a class by its fully qualified dotted path.
+ *
+ * @param classFullDottedPath The full dotted path of the class (e.g., "com.example.MyClass")
+ * @return [IrClassSymbol] representing the found class
+ * @throws IllegalStateException if the class is not found
  */
 internal fun IrPluginContext.findClass(classFullDottedPath: String): IrClassSymbol = this.referenceClass(
     ClassId(
@@ -29,8 +32,9 @@ internal fun IrPluginContext.findClass(classFullDottedPath: String): IrClassSymb
 ) ?: error("$classFullDottedPath was not found")
 
 /**
- * Returns an [IrGetObjectValue] for the given [IrClassSymbol].
- * returns a Kotlin Object instance.
+ * Creates an [IrGetObjectValue] expression for accessing a Kotlin object instance.
+ *
+ * @return [IrGetObjectValue] expression that represents accessing the object instance
  */
 @OptIn(UnsafeDuringIrConstructionAPI::class)
 internal fun IrClassSymbol.getObjectValue(): IrGetObjectValue = IrGetObjectValueImpl(
@@ -40,11 +44,27 @@ internal fun IrClassSymbol.getObjectValue(): IrGetObjectValue = IrGetObjectValue
     this,
 )
 
+/**
+ * Finds a single function within a class by its name.
+ *
+ * @param functionName The name of the function to find
+ * @return [IrSimpleFunctionSymbol] representing the found function
+ * @throws IllegalStateException if the function is not found or if multiple functions with the same name exist
+ */
 @OptIn(UnsafeDuringIrConstructionAPI::class)
 internal fun IrClassSymbol?.findSingleFunction(functionName: String): IrSimpleFunctionSymbol =
     this?.functions?.single { it.owner.name.asString() == functionName }
         ?: error("$functionName was not found inside class: ${this?.owner?.name?.asString()}")
 
+/**
+ * Builds an IR call to `mapOf()` containing function parameters as key-value pairs.
+ *
+ * This function creates a map where each parameter of the given function becomes a key-value pair,
+ * with the parameter name as the key and the parameter value as the value.
+ *
+ * @param declaration The function whose parameters should be included in the map
+ * @return [IrCall] representing a call to `mapOf()` with the function parameters
+ */
 @OptIn(UnsafeDuringIrConstructionAPI::class, InternalSymbolFinderAPI::class)
 internal fun IrBuilderWithScope.buildMapOfParamsCall(declaration: IrFunction): IrCall {
     val mapOfFunction = context.irBuiltIns.symbolFinder.findFunctions(

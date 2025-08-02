@@ -26,7 +26,6 @@ class SimpleFunctionVisitorTest {
     @JvmField
     var temporaryFolder: TemporaryFolder = TemporaryFolder()
 
-    // Define the TrackIt annotation that will trigger our visitor
     private val trackFunctionAnnotation = kotlin(
         "TrackIt.kt",
         """
@@ -41,15 +40,12 @@ class SimpleFunctionVisitorTest {
         """,
     )
 
-    // Define our functions visitor object that will be called by the plugin
-    // This version uses println for verification instead of trying to store state
     private val functionsVisitorImplementation = kotlin(
         "FunctionsVisitor.kt",
         """
         package dev.supersam.test
 
         object FunctionsVisitor {
-            // This is the function our plugin will call
             fun visit(
                 functionName: String,
                 classPath: String,
@@ -61,13 +57,11 @@ class SimpleFunctionVisitorTest {
             }
 
             fun clear() {
-                // No state to clear
             }
         }
         """,
     )
 
-    // Main test class with a function that will be transformed
     private val testClass = kotlin(
         "TestClass.kt",
         """
@@ -86,7 +80,6 @@ class SimpleFunctionVisitorTest {
         """,
     )
 
-    // Complex test class with multiple parameters
     private val complexTestClass = kotlin(
         "ComplexTest.kt",
         """
@@ -108,21 +101,17 @@ class SimpleFunctionVisitorTest {
         """,
     )
 
-    // Test runner main class
     private val testRunner = kotlin(
         "TestRunner.kt",
         """
         package dev.supersam.test
 
         fun main() {
-            // Test annotated function
             val testClass = TestClass()
             testClass.annotatedFunction("John", 30)
 
-            // Test non-annotated function
             testClass.nonAnnotatedFunction(42.0)
 
-            // Test complex function
             val complexTest = ComplexTest()
             complexTest.complexFunction("test", 42, 3.14, true, null, listOf("a", "b"))
 
@@ -131,7 +120,6 @@ class SimpleFunctionVisitorTest {
         """,
     )
 
-    // Test runner for disabled plugin
     private val disabledPluginRunner = kotlin(
         "DisabledPluginRunner.kt",
         """
@@ -145,7 +133,6 @@ class SimpleFunctionVisitorTest {
         """,
     )
 
-    // Class for disabled plugin test
     private val disabledTestClass = kotlin(
         "DisabledTest.kt",
         """
@@ -160,7 +147,6 @@ class SimpleFunctionVisitorTest {
         """,
     )
 
-    // Test runner for disabled visitor
     private val disabledVisitorRunner = kotlin(
         "DisabledVisitorRunner.kt",
         """
@@ -174,7 +160,6 @@ class SimpleFunctionVisitorTest {
         """,
     )
 
-    // Class for disabled visitor test
     private val visitorDisabledTestClass = kotlin(
         "VisitorDisabledTest.kt",
         """
@@ -197,27 +182,20 @@ class SimpleFunctionVisitorTest {
         System.setOut(PrintStream(outputStream))
 
         try {
-            // Compile and run the test
             val result = compile(testClass, complexTestClass, testRunner)
             assertThat(result.exitCode).isEqualTo(ExitCode.OK)
 
-            // Run the main method
             val mainClass = result.classLoader.loadClass("dev.supersam.test.TestRunnerKt")
             mainClass.getMethod("main").invoke(null)
 
-            // Get the output
             val output = outputStream.toString()
 
-            // Verify the test ran to completion
             assertThat(output).contains("TEST_RUNNER: All tests completed")
 
-            // Verify the annotated function was tracked
             assertThat(output).contains("VISITOR_LOG: Function called: dev.supersam.test.TestClass.annotatedFunction")
 
-            // Verify parameters were captured (currently empty due to simplified map implementation)
             assertThat(output).contains("VISITOR_LOG: Parameters: ")
 
-            // Verify the non-annotated function was not tracked
             assertThat(
                 countOccurrences(
                     output,
@@ -225,7 +203,6 @@ class SimpleFunctionVisitorTest {
                 ),
             ).isEqualTo(2) // One for annotated function, one for complex function
         } finally {
-            // Restore System.out
             System.setOut(originalOut)
         }
     }
@@ -238,27 +215,20 @@ class SimpleFunctionVisitorTest {
         System.setOut(PrintStream(outputStream))
 
         try {
-            // Compile and run the test
             val result = compile(testClass, complexTestClass, testRunner)
             assertThat(result.exitCode).isEqualTo(ExitCode.OK)
 
-            // Run the main method
             val mainClass = result.classLoader.loadClass("dev.supersam.test.TestRunnerKt")
             mainClass.getMethod("main").invoke(null)
 
-            // Get the output
             val output = outputStream.toString()
 
-            // Verify the test ran to completion
             assertThat(output).contains("TEST_RUNNER: All tests completed")
 
-            // Verify the complex function was tracked
             assertThat(output).contains("VISITOR_LOG: Function called: dev.supersam.test.ComplexTest.complexFunction")
 
-            // Verify all parameters were captured (currently empty due to simplified map implementation)
             assertThat(output).contains("VISITOR_LOG: Parameters: ")
         } finally {
-            // Restore System.out
             System.setOut(originalOut)
         }
     }
@@ -271,7 +241,6 @@ class SimpleFunctionVisitorTest {
         System.setOut(PrintStream(outputStream))
 
         try {
-            // Compile and run the test with plugin disabled
             val result = compileWithOptions(
                 mapOf(ENABLED to "false"),
                 disabledTestClass,
@@ -279,20 +248,15 @@ class SimpleFunctionVisitorTest {
             )
             assertThat(result.exitCode).isEqualTo(ExitCode.OK)
 
-            // Run the main method
             val mainClass = result.classLoader.loadClass("dev.supersam.test.DisabledPluginRunnerKt")
             mainClass.getMethod("main").invoke(null)
 
-            // Get the output
             val output = outputStream.toString()
 
-            // Verify the test ran to completion
             assertThat(output).contains("DISABLED_PLUGIN: Test completed")
 
-            // Verify the visitor was not called (no visitor log output)
             assertThat(output).doesNotContain("VISITOR_LOG")
         } finally {
-            // Restore System.out
             System.setOut(originalOut)
         }
     }
@@ -305,7 +269,6 @@ class SimpleFunctionVisitorTest {
         System.setOut(PrintStream(outputStream))
 
         try {
-            // Compile and run the test with visitor disabled
             val result = compileWithOptions(
                 mapOf(FUNCTIONS_VISITOR_ENABLED to "false"),
                 visitorDisabledTestClass,
@@ -313,20 +276,15 @@ class SimpleFunctionVisitorTest {
             )
             assertThat(result.exitCode).isEqualTo(ExitCode.OK)
 
-            // Run the main method
             val mainClass = result.classLoader.loadClass("dev.supersam.test.DisabledVisitorRunnerKt")
             mainClass.getMethod("main").invoke(null)
 
-            // Get the output
             val output = outputStream.toString()
 
-            // Verify the test ran to completion
             assertThat(output).contains("DISABLED_VISITOR: Test completed")
 
-            // Verify the visitor was not called (no visitor log output)
             assertThat(output).doesNotContain("VISITOR_LOG")
         } finally {
-            // Restore System.out
             System.setOut(originalOut)
         }
     }
@@ -350,7 +308,6 @@ class SimpleFunctionVisitorTest {
             FUNCTIONS_VISITOR_PATH to "dev.supersam.test.FunctionsVisitor.visit",
         )
 
-        // Override with custom options
         val effectiveOptions = defaultOptions + options
 
         pluginOptions = effectiveOptions.map { (key, value) ->

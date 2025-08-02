@@ -6,6 +6,17 @@ import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 
+/**
+ * Main IR generation extension for the Compilugin plugin.
+ *
+ * This extension is responsible for performing code transformations during the IR generation phase
+ * of Kotlin compilation. It delegates the actual transformation work to [CompiluginTransformer].
+ *
+ * @param debugLogger Logger for debug output
+ * @param enableFunctionsVisitor Whether to enable the functions visitor feature
+ * @param functionsVisitorAnnotation The annotation class name to look for
+ * @param functionsVisitorPath The path to the visitor function
+ */
 internal class CompiluginGenerationExtension(
     private val debugLogger: DebugLogger,
     private val enableFunctionsVisitor: Boolean,

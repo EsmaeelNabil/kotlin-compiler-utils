@@ -6,6 +6,7 @@ jvmTarget = "11"
 ksp = "2.2.0-2.0.2"
 buildConfig = "5.5.1"
 kotlinCompileTesting = "0.8.0"
+spotless = "7.0.4"
 
 [libraries]
 serializationJson = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version = "1.7.3" }
@@ -27,5 +28,5 @@ mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.31.0" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 buildConfig = {id = "com.github.gmazzo.buildconfig", version.ref = "buildConfig"}
-spotless = { id = "com.diffplug.spotless", version = "7.0.4" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 

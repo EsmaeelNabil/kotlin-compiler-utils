@@ -16,7 +16,7 @@ dependencyResolutionManagement {
         mavenLocal()
     }
     versionCatalogs {
-        create("libs") {
+        create("deps") {
             from(files("gradle/libs.versions.toml"))
         }
     }

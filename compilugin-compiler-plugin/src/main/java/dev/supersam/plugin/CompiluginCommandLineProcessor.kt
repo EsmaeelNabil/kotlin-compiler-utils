@@ -10,6 +10,19 @@ import org.jetbrains.kotlin.compiler.plugin.CommandLineProcessor
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.jetbrains.kotlin.config.CompilerConfiguration
 
+/**
+ * Command line processor for the Compilugin Kotlin compiler plugin.
+ *
+ * This processor handles command line options passed to the plugin during compilation,
+ * converting them into internal configuration keys that the plugin components can use.
+ *
+ * Supported options:
+ * - `enabled`: Enable/disable the plugin
+ * - `logging`: Enable/disable debug logging
+ * - `functionsVisitorEnabled`: Enable/disable the functions visitor feature
+ * - `functionsVisitorPath`: Path to the visitor function
+ * - `functionsVisitorAnnotation`: Annotation class to look for
+ */
 @AutoService(CommandLineProcessor::class)
 public class CompiluginCommandLineProcessor : CommandLineProcessor {
 

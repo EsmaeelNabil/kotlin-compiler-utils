@@ -11,6 +11,16 @@ import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import org.jetbrains.kotlin.config.CommonConfigurationKeys
 import org.jetbrains.kotlin.config.CompilerConfiguration
 
+/**
+ * Component registrar for the Compilugin Kotlin compiler plugin.
+ *
+ * This class is responsible for registering the plugin's extensions with the Kotlin compiler.
+ * It reads configuration values from the compiler configuration and sets up the necessary
+ * IR generation extensions.
+ *
+ * The registrar supports Kotlin K2 compiler and registers the following extensions:
+ * - [CompiluginGenerationExtension]: Main IR generation extension for code transformations
+ */
 @AutoService(CompilerPluginRegistrar::class)
 public class CompiluginComponentRegistrar : CompilerPluginRegistrar() {
 
@@ -25,15 +35,10 @@ public class CompiluginComponentRegistrar : CompilerPluginRegistrar() {
         val messageCollector =
             configuration.get(CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY, MessageCollector.NONE)
 
-        // logging
         val loggingEnabled = configuration[key_logging_enabled_compiler_key] == true
-
-        // functions visitor
         val enableFunctionsVisitor = configuration[enable_functions_visitor_compiler_key] == true
-        // functions visitor annotation
         val functionsVisitorAnnotation =
             configuration.get(functions_visitor_annotation_compiler_key).orEmpty()
-        // functions visitor path
         val functionsVisitorPath = configuration.get(functions_visitor_path_compiler_key).orEmpty()
 
         IrGenerationExtension.registerExtension(
