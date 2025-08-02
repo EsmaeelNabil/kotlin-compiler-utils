@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Git pre-commit hook to automatically format code with Spotless
+# This hook runs before each commit and auto-fixes formatting violations
+
+set -e
+
+echo "🎨 Running pre-commit formatting check..."
+
+# Check if spotlessCheck passes
+if ! ./gradlew spotlessCheck --quiet; then
+    echo "🔧 Code formatting violations found, applying fixes..."
+    
+    # Apply formatting fixes
+    ./gradlew spotlessApply --quiet
+    
+    # Check if there are changes to add to the commit
+    if ! git diff --quiet; then
+        echo "📝 Adding formatted files to commit..."
+        git add -u  # Add only tracked files that were modified
+        echo "✅ Formatting fixes applied and staged"
+    else
+        echo "ℹ️ No formatting changes were needed"
+    fi
+else
+    echo "✅ Code formatting is already correct"
+fi
+
+echo "🚀 Pre-commit formatting check complete"

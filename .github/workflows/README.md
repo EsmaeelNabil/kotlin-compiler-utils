@@ -111,6 +111,25 @@ The enhanced `publish.sh` script can also handle version management:
 - ✅ Pushes to GitHub (triggers CI)
 - ✅ Colorful output with progress indicators
 
+## Git Hooks
+
+The project includes Git hooks for automatic code formatting:
+
+```bash
+# Install the hooks (run once after cloning)
+./.githooks/install-hooks.sh
+```
+
+**Pre-commit hook features:**
+- ✅ Automatically runs `spotlessApply` before each commit
+- ✅ Fixes formatting violations and adds them to your commit
+- ✅ Ensures consistent code formatting across the project
+
+To bypass the hook temporarily (not recommended):
+```bash
+git commit --no-verify -m "your message"
+```
+
 ## Local Testing
 
 To test workflows locally, you can run similar commands:

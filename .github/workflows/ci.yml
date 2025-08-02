@@ -18,6 +18,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
       
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -30,7 +33,30 @@ jobs:
       with:
         cache-read-only: false
         
-    - name: Check code formatting
+    - name: Auto-format code if needed
+      run: |
+        # Check if formatting is needed
+        if ! ./gradlew spotlessCheck; then
+          echo "🔧 Code formatting violations found, applying fixes..."
+          ./gradlew spotlessApply
+          
+          # Check if there are changes to commit
+          if ! git diff --quiet; then
+            echo "📝 Committing formatting changes..."
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add -A
+            git commit -m "🎨 Auto-fix code formatting violations"
+            git push origin ${{ github.head_ref || github.ref_name }}
+            echo "✅ Formatting changes committed and pushed"
+          else
+            echo "ℹ️ No formatting changes needed"
+          fi
+        else
+          echo "✅ Code formatting is already correct"
+        fi
+        
+    - name: Verify code formatting
       run: ./gradlew spotlessCheck
       
     - name: Run core plugin tests
@@ -172,6 +198,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        fetch-depth: 0
       
     - name: Set up JDK 17
       uses: actions/setup-java@v4
@@ -184,7 +213,30 @@ jobs:
       with:
         cache-read-only: false
         
-    - name: Check code formatting
+    - name: Auto-format code if needed  
+      run: |
+        # Check if formatting is needed
+        if ! ./gradlew spotlessCheck; then
+          echo "🔧 Code formatting violations found, applying fixes..."
+          ./gradlew spotlessApply
+          
+          # Check if there are changes to commit
+          if ! git diff --quiet; then
+            echo "📝 Committing formatting changes..."
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add -A
+            git commit -m "🎨 Auto-fix code formatting violations"
+            git push origin ${{ github.head_ref || github.ref_name }}
+            echo "✅ Formatting changes committed and pushed"
+          else
+            echo "ℹ️ No formatting changes needed"
+          fi
+        else
+          echo "✅ Code formatting is already correct"
+        fi
+        
+    - name: Verify code formatting
       run: ./gradlew spotlessCheck
       
     - name: Run static analysis
