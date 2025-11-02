@@ -1,11 +1,11 @@
 [versions]
-kotlin = "2.2.0"
+kotlin = "2.2.21"
 ksp = "2.2.0-2.0.2"
 agp = "8.7.2"
 activityCompose = "1.9.3"
 compose = "1.7.0"
 buildConfig = "5.5.1"
-compilugin = "0.0.6"
+compilugin = "0.0.7"
 
 
 [libraries]

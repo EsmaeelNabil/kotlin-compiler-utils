@@ -7,7 +7,7 @@
 ```kotlin
 plugins {
     //...
-    id("dev.supersam.compilugin") version "0.0.6"
+    id("dev.supersam.compilugin") version "0.0.7"
 }
 
 ```

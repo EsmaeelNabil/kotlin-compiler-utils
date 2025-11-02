@@ -1,6 +1,6 @@
 pluginManagement {
+    includeBuild("..")
     repositories {
-        mavenLocal()
         google {
             content {
                 includeGroupByRegex("com\\.android.*")
@@ -15,9 +15,17 @@ pluginManagement {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        mavenLocal()
         google()
         mavenCentral()
+    }
+}
+
+includeBuild("..") {
+    dependencySubstitution {
+        substitute(module("dev.supersam:compilugin-compiler-plugin")).using(project(":compilugin-compiler-plugin"))
+        substitute(
+            module("dev.supersam:compilugin-compiler-plugin-gradle"),
+        ).using(project(":compilugin-compiler-plugin-gradle"))
     }
 }
 

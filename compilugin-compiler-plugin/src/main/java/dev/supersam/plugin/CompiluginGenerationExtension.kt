@@ -1,10 +1,14 @@
+@file:OptIn(UnsafeDuringIrConstructionAPI::class)
+
 package dev.supersam.plugin
 
-import dev.supersam.transformations.CompiluginTransformer
+import dev.supersam.transformations.CompiluginTransformerVoid
 import dev.supersam.util.DebugLogger
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
+import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
+import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
 
 /**
  * Main IR generation extension for the Compilugin plugin.
@@ -29,15 +33,15 @@ internal class CompiluginGenerationExtension(
         debugLogger.log("enableFunctionsVisitor: $enableFunctionsVisitor")
         debugLogger.log("functionsVisitorAnnotation: $functionsVisitorAnnotation")
         debugLogger.log("functionsVisitorPath: $functionsVisitorPath")
-        moduleFragment.transform(
-            transformer = CompiluginTransformer(
-                pluginContext = pluginContext,
-                logger = debugLogger,
-                enableFunctionsVisitor = enableFunctionsVisitor,
-                functionsVisitorAnnotation = functionsVisitorAnnotation,
-                functionsVisitorPath = functionsVisitorPath,
-            ),
-            data = null,
+
+        val transformer = CompiluginTransformerVoid(
+            context = pluginContext,
+            logger = debugLogger,
+            enableFunctionAnnotationTransformer = enableFunctionsVisitor,
+            annotationClass = functionsVisitorAnnotation,
+            objectToInjectCallFor = functionsVisitorPath,
         )
+
+        moduleFragment.acceptChildrenVoid(transformer)
     }
 }

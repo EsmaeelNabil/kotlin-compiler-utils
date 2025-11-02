@@ -12,7 +12,7 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
  * @param debug Whether debug logging is enabled
  * @param messageCollector The compiler's message collector for output
  */
-internal class DebugLogger(private val debug: Boolean, private val messageCollector: MessageCollector) {
+public class DebugLogger(private val debug: Boolean, private val messageCollector: MessageCollector) {
 
     /**
      * Logs a debug message if debug mode is enabled.

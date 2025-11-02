@@ -1,9 +1,15 @@
 package dev.supersam.util
 
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.fir.backend.utils.defaultTypeWithoutArguments
 import org.jetbrains.kotlin.ir.InternalSymbolFinderAPI
-import org.jetbrains.kotlin.ir.builders.*
-import org.jetbrains.kotlin.ir.declarations.IrFunction
+import org.jetbrains.kotlin.ir.builders.IrBuilderWithScope
+import org.jetbrains.kotlin.ir.builders.irCall
+import org.jetbrains.kotlin.ir.builders.irGet
+import org.jetbrains.kotlin.ir.builders.irString
+import org.jetbrains.kotlin.ir.builders.irVararg
+import org.jetbrains.kotlin.ir.declarations.IrDeclaration
+import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrGetObjectValue
 import org.jetbrains.kotlin.ir.expressions.impl.IrGetObjectValueImpl
@@ -12,10 +18,19 @@ import org.jetbrains.kotlin.ir.symbols.IrSimpleFunctionSymbol
 import org.jetbrains.kotlin.ir.symbols.UnsafeDuringIrConstructionAPI
 import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.util.constructors
+import org.jetbrains.kotlin.ir.util.dump
 import org.jetbrains.kotlin.ir.util.functions
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
+
+/**
+ * Returns true if this function/class/variable Has this annotation or not
+ */
+
+public fun IrDeclaration.hasAnnotation(annotationFqName: String): Boolean = annotations.any {
+    it.dump().contains(annotationFqName)
+}
 
 /**
  * Finds a class by its fully qualified dotted path.
@@ -40,7 +55,7 @@ internal fun IrPluginContext.findClass(classFullDottedPath: String): IrClassSymb
 internal fun IrClassSymbol.getObjectValue(): IrGetObjectValue = IrGetObjectValueImpl(
     this.owner.startOffset,
     this.owner.endOffset,
-    this.defaultType,
+    this.defaultTypeWithoutArguments,
     this,
 )
 
@@ -66,7 +81,7 @@ internal fun IrClassSymbol?.findSingleFunction(functionName: String): IrSimpleFu
  * @return [IrCall] representing a call to `mapOf()` with the function parameters
  */
 @OptIn(UnsafeDuringIrConstructionAPI::class, InternalSymbolFinderAPI::class)
-internal fun IrBuilderWithScope.buildMapOfParamsCall(declaration: IrFunction): IrCall {
+internal fun IrBuilderWithScope.buildMapOfParamsCall(declaration: IrSimpleFunction): IrCall {
     val mapOfFunction = context.irBuiltIns.symbolFinder.findFunctions(
         Name.identifier("mapOf"),
         FqName("kotlin.collections"),
@@ -76,9 +91,10 @@ internal fun IrBuilderWithScope.buildMapOfParamsCall(declaration: IrFunction): I
     } ?: error("mapOf(vararg pairs) function not found")
 
     return irCall(mapOfFunction).apply {
-        val pairClass =
-            context.irBuiltIns.symbolFinder.findClass(Name.identifier("Pair"), FqName("kotlin"))
-                ?: error("Pair class not found")
+        val pairClass = context.irBuiltIns.symbolFinder.findClass(
+            Name.identifier("Pair"),
+            FqName("kotlin"),
+        ) ?: error("Pair class not found")
         val pairConstructor = pairClass.owner.constructors.firstOrNull()
             ?: error("Pair constructor not found")
 
@@ -91,9 +107,11 @@ internal fun IrBuilderWithScope.buildMapOfParamsCall(declaration: IrFunction): I
                 arguments[1] = irGet(param)
             }
         }
+
+        // Combine pairs into a vararg
         arguments[0] = irVararg(
             pairType,
             keyValuePairs,
-        ) // Combine pairs into a vararg
+        )
     }
 }
